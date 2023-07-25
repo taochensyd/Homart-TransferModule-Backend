@@ -7,8 +7,11 @@ const port = 3005;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   next();
 });
 
@@ -32,11 +35,16 @@ const loginToSAPSession = async () => {
       response.headers["set-cookie"]
     );
     console.log("response.data:" + response.data);
-    const cookies = response.headers['set-cookie'];
-    const b1SessionCookie = cookies.find(cookie => cookie.startsWith('B1SESSION=')).split(';')[0];
-    const routeIdCookie = cookies.find(cookie => cookie.startsWith('ROUTEID=')).split(';')[0];
-    const cookie = [b1SessionCookie, routeIdCookie].join('; ');
-    
+
+    const cookies = response.headers["set-cookie"];
+    const b1SessionCookie = cookies
+      .find((cookie) => cookie.startsWith("B1SESSION="))
+      .split(";")[0];
+    const routeIdCookie = cookies
+      .find((cookie) => cookie.startsWith("ROUTEID="))
+      .split(";")[0];
+    const cookie = [b1SessionCookie, routeIdCookie].join("; ");
+
     sessionObj.sessionId = cookie;
   } catch (error) {
     console.log("error.message:" + error.message);
@@ -45,12 +53,12 @@ const loginToSAPSession = async () => {
 
 app.post("/api/login", async (req, res) => {
   await loginToSAPSession();
-  res.send({ message: 'Logged in to SAP session' });
+  res.send({ message: "Logged in to SAP session" });
 });
 
 // User SAP account verify
 app.post("/api/userAccount", async (req, res) => {
-  console.log('req.body:', req.body);
+  console.log("req.body:", req.body);
   const checkAccountBaseURL = `https://192.168.0.44:50000/b1s/v1/view.svc/Homart_CheckUserAccount_B1SLQuery()?$filter=U_UserCode eq '${req.body.sapusername}' and U_UserPW eq '${req.body.sappassword}'`;
   console.log(checkAccountBaseURL);
   console.log("sessionObj.sessionId: " + sessionObj.sessionId);
@@ -58,7 +66,7 @@ app.post("/api/userAccount", async (req, res) => {
     const response = await axios.get(checkAccountBaseURL, {
       withCredentials: true,
       headers: {
-        'Cookie': sessionObj.sessionId,
+        Cookie: sessionObj.sessionId,
       },
     });
     const count = response.data.value.length;
@@ -67,12 +75,16 @@ app.post("/api/userAccount", async (req, res) => {
     console.log("error.message:", error.message);
     res.status(500).send(error.message);
   }
-});
 
+  //   Sample Response if username and password matched, if not matched, count = 0
+  //   {
+  //     "count": 1
+  // }
+});
 
 // Batch number details
 app.post("/api/batchnumberdetail", async (req, res) => {
-  console.log('req.body:', req.body);
+  console.log("req.body:", req.body);
   const getItemByBatchBaseURL = `https://192.168.0.44:50000/b1s/v1/BatchNumberDetails?$filter=Batch eq '${req.body.BatchNumber}'`;
   console.log(getItemByBatchBaseURL);
   console.log("sessionObj.sessionId: " + sessionObj.sessionId);
@@ -80,7 +92,7 @@ app.post("/api/batchnumberdetail", async (req, res) => {
     const response = await axios.get(getItemByBatchBaseURL, {
       withCredentials: true,
       headers: {
-        'Cookie': sessionObj.sessionId,
+        Cookie: sessionObj.sessionId,
       },
     });
     res.send(response.data);
@@ -88,11 +100,60 @@ app.post("/api/batchnumberdetail", async (req, res) => {
     console.log("error.message:", error.message);
     res.status(500).send(error.message);
   }
+
+  //   Sample Response
+  // {
+  //     "odata.metadata": "https://192.168.0.44:50000/b1s/v1/$metadata#BatchNumberDetails",
+  //     "value": [
+  //         {
+  //             "DocEntry": 19425,
+  //             "ItemCode": "PB300-0010",
+  //             "ItemDescription": "Bottle 1HOM RA300ml Amber PET Bottle - JX",
+  //             "Status": "bdsStatus_Released",
+  //             "Batch": "H36592",
+  //             "BatchAttribute1": "S00403-Homart OEM",
+  //             "BatchAttribute2": null,
+  //             "AdmissionDate": "2023-03-08",
+  //             "ManufacturingDate": null,
+  //             "ExpirationDate": null,
+  //             "Details": null,
+  //             "SystemNumber": 89,
+  //             "U_DateReleased": "2023-03-31",
+  //             "U_DateProcessed": null,
+  //             "U_PestReason": null,
+  //             "U_PackingSign": null,
+  //             "U_LabelSample": null,
+  //             "U_MilkSign": null,
+  //             "U_Origin": null,
+  //             "U_AQISNo": null,
+  //             "U_F03H": null,
+  //             "U_TransDelReced": null,
+  //             "U_TransDelAccept": null,
+  //             "U_ClaimedQty": 19040,
+  //             "U_ShipperDamaged": "P",
+  //             "U_DamagedReason": null,
+  //             "U_ShipperLabel": "P",
+  //             "U_LabelReason": null,
+  //             "U_PestCheck": "P",
+  //             "U_COAWeight": null,
+  //             "U_WarehouseComment": "(2P*16C+12C+8C)*272+(28C+8C)*136=19040",
+  //             "U_SuppCatNum": null,
+  //             "U_SupplierCode": "S00014-浙江上虞市佳星塑料製品有限公司 RMB/JX",
+  //             "U_GRPO": "GRPO",
+  //             "U_InventoryUoM": "each",
+  //             "U_AllowBatchDup": "N",
+  //             "U_Manufacturer": null,
+  //             "U_DeliveryNo": null,
+  //             "U_InventoryNotes": null,
+  //             "U_TestBeforeUse": "N"
+  //         }
+  //     ]
+  // }
 });
 
 // Items
 app.post("/api/items", async (req, res) => {
-  console.log('req.body:', req.body);
+  console.log("req.body:", req.body);
   const getItemDetailByItemNumberBaseURL = `https://192.168.0.44:50000/b1s/v1/Items('${req.body.ItemNumber}')`;
   console.log(getItemDetailByItemNumberBaseURL);
   console.log("sessionObj.sessionId: " + sessionObj.sessionId);
@@ -100,7 +161,7 @@ app.post("/api/items", async (req, res) => {
     const response = await axios.get(getItemDetailByItemNumberBaseURL, {
       withCredentials: true,
       headers: {
-        'Cookie': sessionObj.sessionId,
+        Cookie: sessionObj.sessionId,
       },
     });
     res.send(response.data);
@@ -112,7 +173,7 @@ app.post("/api/items", async (req, res) => {
 
 // BinLocations
 app.post("/api/binlocations", async (req, res) => {
-  console.log('req.body:', req.body);
+  console.log("req.body:", req.body);
   const getBinLocationBaseURL = `https://192.168.0.44:50000/b1s/v1/BinLocations?$select=AbsEntry,BinCode,Warehouse&$filter=Warehouse eq '${req.body.WarehouseCode}'`;
   console.log(getBinLocationBaseURL);
   console.log("sessionObj.sessionId: " + sessionObj.sessionId);
@@ -120,7 +181,7 @@ app.post("/api/binlocations", async (req, res) => {
     const response = await axios.get(getBinLocationBaseURL, {
       withCredentials: true,
       headers: {
-        'Cookie': sessionObj.sessionId,
+        Cookie: sessionObj.sessionId,
       },
     });
     res.send(response.data);
@@ -128,6 +189,45 @@ app.post("/api/binlocations", async (req, res) => {
     console.log("error.message:", error.message);
     res.status(500).send(error.message);
   }
+});
+
+// Batch in Bin and Qty
+app.post("/api/batchinbin", async (req, res) => {
+  console.log("req.body:", req.body);
+  const getBatchInBinBaseURL = `https://192.168.0.44:50000/b1s/v1/view.svc/Homart_BatchInBinQty_B1SLQuery()?$filter=DistNumber eq '${req.body.BatchNumber}' and OnHandQty gt 0`;
+  console.log(getBatchInBinBaseURL);
+  console.log("sessionObj.sessionId: " + sessionObj.sessionId);
+  try {
+    const response = await axios.get(getBatchInBinBaseURL, {
+      withCredentials: true,
+      headers: {
+        Cookie: sessionObj.sessionId,
+      },
+    });
+    res.send(response.data);
+  } catch (error) {
+    console.log("error.message:", error.message);
+    res.status(500).send(error.message);
+  }
+
+  // Sample Response
+  //   {
+  //     "odata.metadata": "https://192.168.0.44:50000/b1s/v1/view.svc/$metadata#Homart_BatchInBinQty_B1SLQuery",
+  //     "value": [
+  //         {
+  //             "ItemCode": "PC038-0010",
+  //             "ItemName": "Cap 1HOM 38mm Gold Cap for RA300/185 with Induction Seal - JX",
+  //             "DistNumber": "H36593",
+  //             "batchabsebntry": 19426,
+  //             "WhsCode": "WCP",
+  //             "WhsName": "Component warehouse",
+  //             "BinAbs": 671,
+  //             "BinCode": "WCP-1K20-1",
+  //             "OnHandQty": 19208,
+  //             "id__": 1
+  //         }
+  //     ]
+  // }
 });
 
 app.listen(port, () => {
