@@ -93,6 +93,7 @@ app.post("/api/batchnumberdetail", async (req, res) => {
       withCredentials: true,
       headers: {
         Cookie: sessionObj.sessionId,
+        Prefer: "odata.maxpagesize=9999999999",
       },
     });
     res.send(response.data);
@@ -162,6 +163,7 @@ app.post("/api/items", async (req, res) => {
       withCredentials: true,
       headers: {
         Cookie: sessionObj.sessionId,
+        Prefer: "odata.maxpagesize=9999999999",
       },
     });
     res.send(response.data);
@@ -182,6 +184,7 @@ app.post("/api/binlocations", async (req, res) => {
       withCredentials: true,
       headers: {
         Cookie: sessionObj.sessionId,
+        Prefer: "odata.maxpagesize=9999999999",
       },
     });
     res.send(response.data);
@@ -202,6 +205,7 @@ app.post("/api/batchinbin", async (req, res) => {
       withCredentials: true,
       headers: {
         Cookie: sessionObj.sessionId,
+        Prefer: "odata.maxpagesize=9999999999",
       },
     });
     res.send(response.data);
