@@ -1,0 +1,39 @@
+Below is the SAP Business One SQL View
+
+
+
+Select BinCode 
+FROM BIN_ONHAND T0 
+Where T0.DistNumber ='H36590'
+and T0.Itemcode ='BT-0091'and T0.Whscode='WIQ'
+and T0.OnHandQty > 0 Order By BinCode
+
+
+SELECT U_UserCode, U_UserPW, firstName 
+FROM OHEM;
+
+
+Create View
+CREATE VIEW [dbo].[B1_BatchInBinQtyB1SLQuery] AS  
+Select ItemCode, ItemName, DistNumber, batchabsebntry, WhsCode, WhsName, BinAbs, BinCode, OnHandQty 
+FROM BIN_ONHAND;
+
+
+CREATE VIEW [dbo].[Homart_CheckUserAccount_B1SLQuery] AS  
+SELECT U_UserCode, U_UserPW, firstName 
+FROM OHEM;
+
+
+
+CREATE VIEW [dbo].[Homart_GetUserName_B1SLQuery] AS  
+SELECT U_UserCode, U_UserPW, firstName 
+FROM OHEM;
+
+
+CREATE VIEW [dbo].[Homart_JournalMemo_B1SLQuery] AS 
+SELECT [JrnlMemo]
+FROM OWTR
+WHERE JrnlMemo LIKE 'WEB STOCK Transferno:%'
+ORDER BY DocEntry DESC
+OFFSET 0 ROWS
+FETCH NEXT 1 ROWS ONLY;
