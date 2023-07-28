@@ -1,6 +1,6 @@
 Below is the SAP Business One SQL View
 
-
+Execut this in the SQL server and run in query then expose th eview in the Serivce API using postman
 
 Select BinCode 
 FROM BIN_ONHAND T0 
