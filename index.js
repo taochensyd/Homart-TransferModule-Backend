@@ -61,7 +61,7 @@ app.post("/api/userAccount", async (req, res) => {
   console.log("req.body:", req.body);
   const checkAccountBaseURL = `https://192.168.0.44:50000/b1s/v1/view.svc/Homart_CheckUserAccount_B1SLQuery()?$filter=U_UserCode eq '${req.body.sapusername}' and U_UserPW eq '${req.body.sappassword}'`;
   console.log(checkAccountBaseURL);
-  console.log("sessionObj.sessionId: " + sessionObj.sessionId);
+
   try {
     const response = await axios.get(checkAccountBaseURL, {
       withCredentials: true,
@@ -70,6 +70,7 @@ app.post("/api/userAccount", async (req, res) => {
       },
     });
     const count = response.data.value.length;
+    console.log("/b1s/v1/view.svc/Homart_CheckUserAccount_B1SLQuery()");
     res.send({ count });
   } catch (error) {
     console.log("error.message:", error.message);
@@ -96,6 +97,7 @@ app.post("/api/batchnumberdetail", async (req, res) => {
         Prefer: "odata.maxpagesize=9999999999",
       },
     });
+    console.log("/b1s/v1/BatchNumberDetails")
     res.send(response.data);
   } catch (error) {
     console.log("error.message:", error.message);
@@ -166,12 +168,13 @@ app.post("/api/items", async (req, res) => {
         Prefer: "odata.maxpagesize=9999999999",
       },
     });
+    console.log("/api/items")
     res.send(response.data);
   } catch (error) {
     console.log("error.message:", error.message);
     res.status(500).send(error.message);
   }
-    /*
+  /*
       Sample response from API
         //   Sample Response
 //   {
@@ -183,7 +186,6 @@ app.post("/api/items", async (req, res) => {
 //     "InventoryUOM": "each"
 // }
     */
-
 });
 
 // BinLocations
@@ -200,13 +202,14 @@ app.post("/api/binlocations", async (req, res) => {
         Prefer: "odata.maxpagesize=9999999999",
       },
     });
+    console.log("/b1s/v1/BinLocations")
     res.send(response.data);
   } catch (error) {
     console.log("error.message:", error.message);
     res.status(500).send(error.message);
   }
-// sample response
-/*
+  // sample response
+  /*
   {
     "odata.metadata": "https://192.168.0.44:50000/b1s/v1/$metadata#BinLocations",
     "value": [
@@ -243,7 +246,6 @@ app.post("/api/binlocations", async (req, res) => {
     ]
 }
 */
-
 });
 
 // Batch in Bin and Qty
@@ -260,6 +262,7 @@ app.post("/api/batchinbin", async (req, res) => {
         Prefer: "odata.maxpagesize=9999999999",
       },
     });
+    console.log("/b1s/v1/view.svc/Homart_BatchInBinQty_B1SLQuery()")
     res.send(response.data);
   } catch (error) {
     console.log("error.message:", error.message);
@@ -300,6 +303,7 @@ app.post("/api/journalmemo", async (req, res) => {
         Prefer: "odata.maxpagesize=9999999999",
       },
     });
+    console.log("/b1s/v1/view.svc/Homart_JournalMemo_B1SLQuery()")
     res.send(response.data);
   } catch (error) {
     console.log("error.message:", error.message);
@@ -320,6 +324,9 @@ app.post("/api/journalmemo", async (req, res) => {
 
 app.listen(port, () => {
   console.log("Server listening on port " + port);
+  // Call this function to get the SAP login and session ID when start the app
   loginToSAPSession();
+
+  // Call this function every 28 minutes to keep the session alive (Default session timeout is 30 minutes, however 28 minutes is used to be safe)
   setInterval(loginToSAPSession, 28 * 60 * 1000);
 });
