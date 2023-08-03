@@ -46,14 +46,26 @@ const loginToSAPSession = async () => {
     const cookie = [b1SessionCookie, routeIdCookie].join("; ");
 
     sessionObj.sessionId = cookie;
+    if (response.status === 200) {
+      console.log("Logged in to SAP session");
+      return response.status;
+    } else {
+      console.log("Failed to login to SAP session");
+      return response.status;
+    }
   } catch (error) {
     console.log("error.message:" + error.message);
   }
 };
 
 app.post("/api/login", async (req, res) => {
-  await loginToSAPSession();
-  res.send({ message: "Logged in to SAP session" });
+  let loginStatus = false;
+  loginStatus = await loginToSAPSession();
+  if (loginStatus === 200) {
+    res.status(loginStatus).send({ message: "Logged in to SAP session" });
+  } else {
+    res.status(loginStatus).send({ message: "Failed to login to SAP session" });
+  }
 });
 
 // User SAP account verify
@@ -71,7 +83,11 @@ app.post("/api/userAccount", async (req, res) => {
     });
     const count = response.data.value.length;
     console.log("/b1s/v1/view.svc/Homart_CheckUserAccount_B1SLQuery()");
-    res.send({ count });
+    if (res.statusCode === 200 && count === 1) {
+      res.status(200).send({ count });
+    }
+
+    
   } catch (error) {
     console.log("error.message:", error.message);
     res.status(500).send(error.message);
