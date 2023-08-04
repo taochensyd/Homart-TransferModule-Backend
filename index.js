@@ -25,7 +25,7 @@ const loginToSAPSession = async () => {
     const response = await axios.post(
       "https://192.168.0.44:50000/b1s/v1/Login",
       {
-        CompanyDB: "Homart_TEST8",
+        CompanyDB: "Homart_TEST9",
         UserName: "SAPCreatio",
         Password: "Bold#By68",
       }
