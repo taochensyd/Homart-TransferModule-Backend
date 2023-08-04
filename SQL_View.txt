@@ -1,7 +1,3 @@
-Below is the SAP Business One SQL View
-
-Execut this in the SQL server and run in query then expose th eview in the Serivce API using postman
-
 Select BinCode 
 FROM BIN_ONHAND T0 
 Where T0.DistNumber ='H36590'
@@ -13,8 +9,23 @@ SELECT U_UserCode, U_UserPW, firstName
 FROM OHEM;
 
 
-Create View
-CREATE VIEW [dbo].[B1_BatchInBinQtyB1SLQuery] AS  
+
+
+
+Below are the view that needs to be run in the view of the database.
+Open query then run below section 1 by 1, check if it is success.
+Then in postman, login as manager account,
+then expose the view 1 by 1.
+https://192.168.0.44:50000/b1s/v1/SQLViews('Homart_B1_BatchInBinQty_B1SLQuery')/Expose
+https://192.168.0.44:50000/b1s/v1/SQLViews('Homart_CheckUserAccount_B1SLQuery')/Expose
+https://192.168.0.44:50000/b1s/v1/SQLViews('Homart_GetUserName_B1SLQuery')/Expose
+https://192.168.0.44:50000/b1s/v1/SQLViews('Homart_JournalMemo_B1SLQuery')/Expose
+Above are the POST request without any body.
+Change 'Homart_GetJournalMemo_B1SLQuery' to the name of the view.
+
+
+
+CREATE VIEW [dbo].[Homart_B1_BatchInBinQty_B1SLQuery] AS  
 Select ItemCode, ItemName, DistNumber, batchabsebntry, WhsCode, WhsName, BinAbs, BinCode, OnHandQty 
 FROM BIN_ONHAND;
 
