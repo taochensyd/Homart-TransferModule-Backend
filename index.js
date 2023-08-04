@@ -86,8 +86,6 @@ app.post("/api/userAccount", async (req, res) => {
     if (res.statusCode === 200 && count === 1) {
       res.status(200).send({ count });
     }
-
-    
   } catch (error) {
     console.log("error.message:", error.message);
     res.status(500).send(error.message);
@@ -97,6 +95,12 @@ app.post("/api/userAccount", async (req, res) => {
   //   {
   //     "count": 1
   // }
+});
+
+app.post("/sample/api/userAccount", async (req, res) => {
+  res.send({
+    count: 1,
+  });
 });
 
 // Batch number details
@@ -113,7 +117,7 @@ app.post("/api/batchnumberdetail", async (req, res) => {
         Prefer: "odata.maxpagesize=9999999999",
       },
     });
-    console.log("/b1s/v1/BatchNumberDetails")
+    console.log("/b1s/v1/BatchNumberDetails");
     res.send(response.data);
   } catch (error) {
     console.log("error.message:", error.message);
@@ -184,7 +188,7 @@ app.post("/api/items", async (req, res) => {
         Prefer: "odata.maxpagesize=9999999999",
       },
     });
-    console.log("/api/items")
+    console.log("/api/items");
     res.send(response.data);
   } catch (error) {
     console.log("error.message:", error.message);
@@ -218,7 +222,7 @@ app.post("/api/binlocations", async (req, res) => {
         Prefer: "odata.maxpagesize=9999999999",
       },
     });
-    console.log("/b1s/v1/BinLocations")
+    console.log("/b1s/v1/BinLocations");
     res.send(response.data);
   } catch (error) {
     console.log("error.message:", error.message);
@@ -278,7 +282,7 @@ app.post("/api/batchinbin", async (req, res) => {
         Prefer: "odata.maxpagesize=9999999999",
       },
     });
-    console.log("/b1s/v1/view.svc/Homart_BatchInBinQty_B1SLQuery()")
+    console.log("/b1s/v1/view.svc/Homart_BatchInBinQty_B1SLQuery()");
     res.send(response.data);
   } catch (error) {
     console.log("error.message:", error.message);
@@ -319,7 +323,7 @@ app.post("/api/journalmemo", async (req, res) => {
         Prefer: "odata.maxpagesize=9999999999",
       },
     });
-    console.log("/b1s/v1/view.svc/Homart_JournalMemo_B1SLQuery()")
+    console.log("/b1s/v1/view.svc/Homart_JournalMemo_B1SLQuery()");
     res.send(response.data);
   } catch (error) {
     console.log("error.message:", error.message);
