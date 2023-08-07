@@ -3,7 +3,7 @@ const axios = require("axios");
 const loginToSAPSession = async () => {
   try {
     const response = await axios.post(
-      "https://192.168.0.44:50000/b1s/v1/Login",
+      `${process.env.SAP_BASE_URL}/b1s/v1/Login`,
       {
         CompanyDB: process.env.DB_NAME,
         UserName: process.env.SAP_USERNAME,
