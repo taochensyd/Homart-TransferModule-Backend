@@ -174,6 +174,7 @@ app.post("/api/batchnumberdetail", async (req, res) => {
   // }
 });
 
+
 // Items
 app.post("/api/items", async (req, res) => {
   console.log("req.body:", req.body);
