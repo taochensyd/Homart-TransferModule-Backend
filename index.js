@@ -23,6 +23,11 @@ const sessionObj = {
 };
 
 const loginToSAPSession = async () => {
+
+  if (process.env.ENVIRONMENT === "HOME") {
+    return;
+  }
+
   try {
     const response = await axios.post(
       `${process.env.SAP_BASE_URL}/b1s/v1/Login`,
@@ -58,10 +63,18 @@ const loginToSAPSession = async () => {
   } catch (error) {
     console.log("error.message:" + error.message);
   }
+
+
 };
 
 
 app.post("/api/login", async (req, res) => {
+
+  if (process.env.ENVIRONMENT === "HOME") {
+    res.status(200).send({ message: "Logged in to SAP session" });;
+  }
+
+
   let loginStatus = false;
   loginStatus = await loginToSAPSession();
   if (loginStatus === 200) {
@@ -73,6 +86,13 @@ app.post("/api/login", async (req, res) => {
 
 // User SAP account verify
 app.post("/api/userAccount", async (req, res) => {
+
+
+  if (process.env.ENVIRONMENT === "HOME") {
+    return res.status(200).json({ count: 1 });
+  }
+
+
   console.log("req.body:", req.body);
   const checkAccountBaseURL = `https://192.168.0.44:50000/b1s/v1/view.svc/Homart_CheckUserAccount_B1SLQuery()?$filter=U_UserCode eq '${req.body.sapusername}' and U_UserPW eq '${req.body.sappassword}'`;
   console.log(checkAccountBaseURL);
@@ -100,14 +120,35 @@ app.post("/api/userAccount", async (req, res) => {
   // }
 });
 
-app.post("/sample/api/userAccount", async (req, res) => {
-  res.send({
-    count: 1,
-  });
-});
-
 // Batch number details
 app.post("/api/batchnumberdetail", async (req, res) => {
+
+  if (process.env.ENVIRONMENT === "HOME") {
+    return res.status(200).json({
+
+
+      "odata.metadata": "https://192.168.0.44:50000/b1s/v1/$metadata#BatchNumberDetails",
+      "value": [
+        {
+          "DocEntry": 19425,
+          "ItemCode": "PB300-0010",
+          "ItemDescription": "Bottle 1HOM RA300ml Amber PET Bottle - JX",
+          "Status": "bdsStatus_Released",
+          "Batch": "H36592",
+          "BatchAttribute1": "S00403-Homart OEM",
+          "AdmissionDate": "2023-03-08",
+          "SystemNumber": 89,
+          "U_DateReleased": "2023-03-31",
+          "U_ClaimedQty": 19040,
+          "U_WarehouseComment": "(2P*16C+12C+8C)*272+(28C+8C)*136=19040",
+          "U_SupplierCode": "S00014-浙江上虞市佳星塑料製品有限公司 RMB/JX",
+          "U_InventoryUoM": "each",
+        }
+      ]
+
+    });
+  }
+
   console.log("req.body:", req.body);
   const getItemByBatchBaseURL = `https://192.168.0.44:50000/b1s/v1/BatchNumberDetails?$filter=Batch eq '${req.body.BatchNumber}'`;
   console.log(getItemByBatchBaseURL);
@@ -180,6 +221,21 @@ app.post("/api/batchnumberdetail", async (req, res) => {
 
 // Items
 app.post("/api/items", async (req, res) => {
+
+  if (process.env.ENVIRONMENT === "HOME") {
+    return res.status(200).json(
+      {
+        "odata.metadata": "https://192.168.0.44:50000/b1s/v1/$metadata#Items/@Element",
+        "odata.etag": "W/\"DA4B9237BACCCDF19C0760CAB7AEC4A8359010B0\"",
+        "ItemCode": "PLPID-0006",
+        "ItemName": "Label 1BSP Performance Inspired Turmeric Curcumin 120s",
+        "ForeignName": "Label Performance Inspired Turmeric Curcumin 120s",
+        "InventoryUOM": "each"
+      }
+    );
+  }
+
+
   console.log("req.body:", req.body);
   const getItemDetailByItemNumberBaseURL = `https://192.168.0.44:50000/b1s/v1/Items('${req.body.ItemNumber}')`;
   console.log(getItemDetailByItemNumberBaseURL);
@@ -214,6 +270,52 @@ app.post("/api/items", async (req, res) => {
 
 // BinLocations
 app.post("/api/binlocations", async (req, res) => {
+
+
+  if (process.env.ENVIRONMENT === "HOME") {
+    return res.status(200).json(
+
+      {
+        "odata.metadata": "https://192.168.0.44:50000/b1s/v1/$metadata#BinLocations",
+        "value": [
+          {
+            "AbsEntry": 2445,
+            "Warehouse": "WIQ",
+            "BinCode": "WIQ-0-04LOAD"
+          },
+          {
+            "AbsEntry": 8648,
+            "Warehouse": "WIQ",
+            "BinCode": "WIQ-0-08LOAD"
+          },
+          {
+            "AbsEntry": 1362,
+            "Warehouse": "WIQ",
+            "BinCode": "WIQ-1B18-3"
+          },
+          {
+            "AbsEntry": 4358,
+            "Warehouse": "WIQ",
+            "BinCode": "WIQ-3A35-1"
+          },
+          {
+            "AbsEntry": 4359,
+            "Warehouse": "WIQ",
+            "BinCode": "WIQ-3A35-2"
+          },
+          {
+            "AbsEntry": 4360,
+            "Warehouse": "WIQ",
+            "BinCode": "WIQ-3A35-3"
+          }
+        ]
+      }
+
+    );
+  }
+
+
+
   console.log("req.body:", req.body);
   const getBinLocationBaseURL = `https://192.168.0.44:50000/b1s/v1/BinLocations?$select=AbsEntry,BinCode,Warehouse&$filter=Warehouse eq '${req.body.WarehouseCode}'`;
   console.log(getBinLocationBaseURL);
@@ -274,6 +376,34 @@ app.post("/api/binlocations", async (req, res) => {
 
 // Batch in Bin and Qty
 app.post("/api/batchinbin", async (req, res) => {
+
+  if (process.env.ENVIRONMENT === "HOME") {
+    return res.status(200).json(
+
+      {
+        "odata.metadata": "https://192.168.0.44:50000/b1s/v1/view.svc/$metadata#Homart_BatchInBinQty_B1SLQuery",
+        "value": [
+          {
+            "ItemCode": "PC038-0010",
+            "ItemName": "Cap 1HOM 38mm Gold Cap for RA300/185 with Induction Seal - JX",
+            "DistNumber": "H36593",
+            "batchabsebntry": 19426,
+            "WhsCode": "WCP",
+            "WhsName": "Component warehouse",
+            "BinAbs": 671,
+            "BinCode": "WCP-1K20-1",
+            "OnHandQty": 19208,
+            "id__": 1
+          }
+        ]
+      }
+
+    );
+
+
+  }
+
+
   console.log("req.body:", req.body);
   const getBatchInBinBaseURL = `https://192.168.0.44:50000/b1s/v1/view.svc/Homart_BatchInBinQty_B1SLQuery()?$filter=DistNumber eq '${req.body.BatchNumber}' and OnHandQty gt 0`;
   console.log(getBatchInBinBaseURL);
@@ -315,6 +445,23 @@ app.post("/api/batchinbin", async (req, res) => {
 
 // Get Journal Memo, This is the notes for the Web Transfer
 app.post("/api/journalmemo", async (req, res) => {
+
+  if (process.env.ENVIRONMENT === "HOME") {
+    return res.status(200).json(
+
+      {
+        "odata.metadata": "https://192.168.0.44:50000/b1s/v1/view.svc/$metadata#Homart_JournalMemo_B1SLQuery",
+        "value": [
+          {
+            "JrnlMemo": "WEB STOCK Transferno:202307280005",
+            "id__": 1
+          }
+        ]
+      }
+
+    );
+  }
+
   console.log("req.body:", req.body);
   const getJournalMemoBaseURL = `https://192.168.0.44:50000/b1s/v1/view.svc/Homart_JournalMemo_B1SLQuery()`;
   console.log(getJournalMemoBaseURL);
