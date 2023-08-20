@@ -307,6 +307,21 @@ app.post("/api/binlocations", async (req, res) => {
             "AbsEntry": 4360,
             "Warehouse": "WIQ",
             "BinCode": "WIQ-3A35-3"
+          },
+          {
+            "AbsEntry": 1122,
+            "Warehouse": "WCP",
+            "BinCode": "WCP-3A35-3"
+          },
+          {
+            "AbsEntry": 1132,
+            "Warehouse": "WCP",
+            "BinCode": "WCP-3A35-8"
+          },
+          {
+            "AbsEntry": 1522,
+            "Warehouse": "WCP",
+            "BinCode": "WCP-0A95-3"
           }
         ]
       }
@@ -391,9 +406,45 @@ app.post("/api/batchinbin", async (req, res) => {
             "WhsCode": "WCP",
             "WhsName": "Component warehouse",
             "BinAbs": 671,
-            "BinCode": "WCP-1K20-1",
+            "BinCode": "WCP-3K20-1",
             "OnHandQty": 19208,
             "id__": 1
+          },
+          {
+            "ItemCode": "PC038-0010",
+            "ItemName": "Cap 1HOM 38mm Gold Cap for RA300/185 with Induction Seal - JX",
+            "DistNumber": "H36593",
+            "batchabsebntry": 19426,
+            "WhsCode": "WIQ",
+            "WhsName": "Quantine warehouse",
+            "BinAbs": 1155,
+            "BinCode": "WIQ-7K52-1",
+            "OnHandQty": 5447,
+            "id__": 2
+          },
+          {
+            "ItemCode": "PC0rrt38-0010",
+            "ItemName": "Cap 1HOM 38mm Gold Cap for RA300/185 with Induction Seal - JX",
+            "DistNumber": "H36593",
+            "batchabsebntry": 19426,
+            "WhsCode": "WCP",
+            "WhsName": "Component warehouse",
+            "BinAbs": 365,
+            "BinCode": "WCP-6K52-1",
+            "OnHandQty": 6975,
+            "id__": 3
+          },
+          {
+            "ItemCode": "PC038-00ww10",
+            "ItemName": "Cap 1HOM 38mm Gold Cap for RA300/185 with Induction Seal - JX",
+            "DistNumber": "H36593",
+            "batchabsebntry": 19426,
+            "WhsCode": "WIQ",
+            "WhsName": "Component warehouse",
+            "BinAbs": 443,
+            "BinCode": "WIQ-9K52-1",
+            "OnHandQty": 147,
+            "id__": 4
           }
         ]
       }
