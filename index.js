@@ -332,7 +332,8 @@ app.post("/api/binlocations", async (req, res) => {
 
 
   console.log("req.body:", req.body);
-  const getBinLocationBaseURL = `https://192.168.0.44:50000/b1s/v1/BinLocations?$select=AbsEntry,BinCode,Warehouse&$filter=Warehouse eq '${req.body.WarehouseCode}'`;
+  // const getBinLocationBaseURL = `https://192.168.0.44:50000/b1s/v1/BinLocations?$select=AbsEntry,BinCode,Warehouse&$filter=Warehouse eq '${req.body.WarehouseCode}'`;
+  const getBinLocationBaseURL = `https://192.168.0.44:50000/b1s/v1/BinLocations?$select=AbsEntry,BinCode,Warehouse`
   console.log(getBinLocationBaseURL);
   console.log("sessionObj.sessionId: " + sessionObj.sessionId);
   try {
