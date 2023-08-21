@@ -341,11 +341,11 @@ app.post("/api/binlocations", async (req, res) => {
       withCredentials: true,
       headers: {
         Cookie: sessionObj.sessionId,
-        Prefer: "odata.maxpagesize=9999999999",
+        Prefer: "odata.maxpagesize=999999999",
       },
     });
     console.log("/b1s/v1/BinLocations");
-    res.send(response.data);
+    res.send(response.data.value);
   } catch (error) {
     console.log("error.message:", error.message);
     res.status(500).send(error.message);
@@ -457,7 +457,7 @@ app.post("/api/batchinbin", async (req, res) => {
 
 
   console.log("req.body:", req.body);
-  const getBatchInBinBaseURL = `https://192.168.0.44:50000/b1s/v1/view.svc/Homart_BatchInBinQty_B1SLQuery()?$filter=DistNumber eq '${req.body.BatchNumber}' and OnHandQty gt 0`;
+  const getBatchInBinBaseURL = `https://192.168.0.44:50000/b1s/v1/view.svc/Homart_B1_BatchInBinQty_B1SLQuery()?$filter=DistNumber eq '${req.body.BatchNumber}' and OnHandQty gt 0`
   console.log(getBatchInBinBaseURL);
   console.log("sessionObj.sessionId: " + sessionObj.sessionId);
   try {
