@@ -108,6 +108,10 @@ app.post("/api/userAccount", async (req, res) => {
     console.log("/b1s/v1/view.svc/Homart_CheckUserAccount_B1SLQuery()");
     if (res.statusCode === 200 && count === 1) {
       res.status(200).send({ count });
+    } else if (res.statusCode === 200) {
+      res.status(200).send({ count });
+    } else {
+      res.statusCode(500).send({ count });
     }
   } catch (error) {
     console.log("error.message:", error.message);
