@@ -549,6 +549,32 @@ app.post("/api/journalmemo", async (req, res) => {
   // }
 });
 
+
+
+
+app.post("/api/stocktransfer", async (req, res) => {
+  console.log("req.body:", req.body);
+  const getJournalMemoBaseURL = `https://192.168.0.44:50000/b1s/v1/StockTransfers`;
+  console.log(getJournalMemoBaseURL);
+  console.log("sessionObj.sessionId: " + sessionObj.sessionId);
+  try {
+    const response = await axios.get(getJournalMemoBaseURL, {
+      data: req.body,
+      withCredentials: true,
+      headers: {
+        Cookie: sessionObj.sessionId,
+        Prefer: "odata.maxpagesize=9999999999",
+      },
+    });
+    console.log("https://192.168.0.44:50000/b1s/v1/StockTransfers");
+    res.send(response.data);
+  } catch (error) {
+    console.log("error.message:", error.message);
+    res.status(500).send(error.message);
+  }
+});
+
+
 app.listen(port, () => {
   console.log("Server listening on port " + port);
   // Call this function to get the SAP login and session ID when start the app
