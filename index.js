@@ -491,7 +491,7 @@ app.post("/api/journalmemo", async (req, res) => {
   console.log("req.body:", req.body);
   const getJournalMemoBaseURL = `https://192.168.0.44:50000/b1s/v1/view.svc/Homart_JournalMemo_B1SLQuery()`;
   console.log(getJournalMemoBaseURL);
-  console.log("sessionObj.sessionId: " + sessionObj.sessionId);
+  console.log("getJournalMemoBaseURL: " + getJournalMemoBaseURL);
   try {
     const response = await axios.get(getJournalMemoBaseURL, {
       withCredentials: true,
