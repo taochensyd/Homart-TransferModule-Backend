@@ -1,9 +1,8 @@
-const express = require("express")
-const cors = require("cors")
-  app = express()
-
-  axios = require("axios");
-  app.use(cors())
+const express = require("express");
+const cors = require("cors");
+axios = require("axios");
+app = express();
+app.use(cors());
 require("dotenv").config(), app.use(express.json());
 const port = 3005;
 (process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"),
@@ -15,6 +14,12 @@ const port = 3005;
       ),
       o();
   });
+/**
+ * Object representing the session information.
+ * @typedef {Object} SessionObj
+ * @property {string} sessionId - The session ID.
+ * @property {string} sessionTime - The session time.
+ */
 const sessionObj = { sessionId: null, sessionTime: null },
   loginToSAPSession = async () => {
     if ("HOME" !== process.env.ENVIRONMENT)
@@ -141,8 +146,9 @@ app.post("/api/login", async (s, e) => {
   }),
   app.post("/api/binlocations", async (s, e) => {
     console.log("req.body:", s.body);
-    const o = "https://192.168.0.44:50000/b1s/v1/BinLocations?$select=AbsEntry,BinCode,Warehouse,Inactive,";
-  
+    const o =
+      "https://192.168.0.44:50000/b1s/v1/BinLocations?$select=AbsEntry,BinCode,Warehouse,Inactive,";
+
     console.log(o),
       console.log("sessionObj.sessionId: " + sessionObj.sessionId);
     try {
@@ -155,37 +161,38 @@ app.post("/api/login", async (s, e) => {
       });
       console.log("/b1s/v1/BinLocations"),
         console.log("binlocation: " + s.data.value[0].AbsEntry);
-        // Filter the data
-        const filteredData = s.data.value.filter(item => item.Inactive === "tNO");
-        if (filteredData.length > 0) {
-          e.send(filteredData);
-        } else {
-          console.log("No matching key-value pair found.");
-        }
+      // Filter the data
+      const filteredData = s.data.value.filter(
+        (item) => item.Inactive === "tNO"
+      );
+      if (filteredData.length > 0) {
+        e.send(filteredData);
+      } else {
+        console.log("No matching key-value pair found.");
+      }
     } catch (s) {
       console.log("error.message:", s.message), e.status(500).send(s.message);
     }
   });
-  app.post("/api/batchinbin", async (s, e) => {
-    console.log("req.body:", s.body);
-    const o = `https://192.168.0.44:50000/b1s/v1/view.svc/Homart_B1_BatchInBinQty_B1SLQuery()?$filter=DistNumber eq '${s.body.BatchNumber}' and OnHandQty gt 0`;
-    console.log(o),
-      console.log("sessionObj.sessionId: " + sessionObj.sessionId);
-    try {
-      const s = await axios.get(o, {
-        withCredentials: !0,
-        headers: {
-          Cookie: sessionObj.sessionId,
-          Prefer: "odata.maxpagesize=9999999999",
-        },
-      });
-      console.log("/b1s/v1/view.svc/Homart_BatchInBinQty_B1SLQuery()"),
+app.post("/api/batchinbin", async (s, e) => {
+  console.log("req.body:", s.body);
+  const o = `https://192.168.0.44:50000/b1s/v1/view.svc/Homart_B1_BatchInBinQty_B1SLQuery()?$filter=DistNumber eq '${s.body.BatchNumber}' and OnHandQty gt 0`;
+  console.log(o), console.log("sessionObj.sessionId: " + sessionObj.sessionId);
+  try {
+    const s = await axios.get(o, {
+      withCredentials: !0,
+      headers: {
+        Cookie: sessionObj.sessionId,
+        Prefer: "odata.maxpagesize=9999999999",
+      },
+    });
+    console.log("/b1s/v1/view.svc/Homart_BatchInBinQty_B1SLQuery()"),
       console.log("batchinbin: " + s.data.value),
-        e.send(s.data);
-    } catch (s) {
-      console.log("error.message:", s.message), e.status(500).send(s.message);
-    }
-  }),
+      e.send(s.data);
+  } catch (s) {
+    console.log("error.message:", s.message), e.status(500).send(s.message);
+  }
+}),
   app.post("/api/journalmemo", async (s, e) => {
     if ("HOME" === process.env.ENVIRONMENT)
       return e.status(200).json({
@@ -211,16 +218,14 @@ app.post("/api/login", async (s, e) => {
       console.log("error.message:", s.message), e.status(500).send(s.message);
     }
   }),
-
   app.post("/api/nextavailablejournalmemo", async (s, e) => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0');
-    const day = today.getDate().toString().padStart(2, '0');
+    const month = (today.getMonth() + 1).toString().padStart(2, "0");
+    const day = today.getDate().toString().padStart(2, "0");
     const dateForURL = `${year}-${month}-${day}`;
     const date = `${year}${month}${day}`;
-    const o =
-      `https://192.168.0.44:50000/b1s/v1/StockTransfers?$select=DocDate,JournalMemo&$filter=CreationDate eq '${dateForURL}' and startswith(JournalMemo, 'WEB')`
+    const o = `https://192.168.0.44:50000/b1s/v1/StockTransfers?$select=DocDate,JournalMemo&$filter=CreationDate eq '${dateForURL}' and startswith(JournalMemo, 'WEB')`;
     try {
       const s = await axios.get(o, {
         withCredentials: !0,
@@ -233,35 +238,35 @@ app.post("/api/login", async (s, e) => {
       let nextJournalMemo;
       if (data.value.length > 0) {
         const lastJournalMemo = data.value[data.value.length - 1].JournalMemo;
-        const lastNumberStr = lastJournalMemo.split(':')[1];
-        const lastNumber = isNaN(parseInt(lastNumberStr)) ? 0 : parseInt(lastNumberStr);
+        const lastNumberStr = lastJournalMemo.split(":")[1];
+        const lastNumber = isNaN(parseInt(lastNumberStr))
+          ? 0
+          : parseInt(lastNumberStr);
         const nextNumber = lastNumber + 1;
-        nextJournalMemo = `WEB STOCK Transferno:${date}${nextNumber.toString().padStart(4, '0')}`;
+        nextJournalMemo = `WEB STOCK Transferno:${nextNumber
+          .toString()
+          .padStart(4, "0")}`;
       } else {
         nextJournalMemo = `WEB STOCK Transferno:${date}0001`;
       }
-      e.send({"NextJournalMemo": nextJournalMemo});
+      e.send({ NextJournalMemo: nextJournalMemo });
     } catch (s) {
       console.log("error.message:", s.message), e.status(500).send(s.message);
     }
   });
-  
-  
-  
 
-  app.post("/api/stocktransfer", async (s, e) => {
-    try {
-      const o = await axios.post(
-        "https://192.168.0.44:50000/b1s/v1/StockTransfers",
-        s.body,
-        { withCredentials: !0, headers: { Cookie: sessionObj.sessionId } }
-      );
-      e.send(o.data);
-    } catch (s) {
-      console.log(s), e.status(500).send({ error: s });
-
-    }
-  }),
+app.post("/api/stocktransfer", async (s, e) => {
+  try {
+    const o = await axios.post(
+      "https://192.168.0.44:50000/b1s/v1/StockTransfers",
+      s.body,
+      { withCredentials: !0, headers: { Cookie: sessionObj.sessionId } }
+    );
+    e.send(o.data);
+  } catch (s) {
+    console.log(s), e.status(500).send({ error: s });
+  }
+}),
   app.listen(3005, () => {
     console.log("Server listening on port 3005"),
       loginToSAPSession(),
