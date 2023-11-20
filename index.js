@@ -255,20 +255,43 @@ app.post("/api/batchinbin", async (s, e) => {
     }
   });
 
-app.post("/api/stocktransfer", async (s, e) => {
+app.post("/api/stocktransfer", async (req, res) => {
+  console.log("Received request for /api/stocktransfer");
+  console.log("Request Body:", req.body);
+
   try {
-    const o = await axios.post(
+    console.log("Attempting to post data to the external API");
+
+    const response = await axios.post(
       "https://192.168.0.44:50000/b1s/v1/StockTransfers",
-      s.body,
-      { withCredentials: !0, headers: { Cookie: sessionObj.sessionId } }
+      req.body,
+      {
+        withCredentials: true,
+        headers: { Cookie: sessionObj.sessionId },
+      }
     );
-    e.send(o.data);
-  } catch (s) {
-    console.log(s), e.status(500).send({ error: s });
+
+    console.log("Received response from the external API");
+    console.log("Response Data:", response.data);
+
+    res.send(response.data);
+  } catch (error) {
+    console.error("Error occurred in /api/stocktransfer:");
+    console.error(error);
+
+    // Logging error details if available
+    if (error.response) {
+      console.error("Error Response Data:", error.response.data);
+      console.error("Error Response Status:", error.response.status);
+      console.error("Error Response Headers:", error.response.headers);
+    }
+
+    res.status(500).send({ error: error.message });
   }
-}),
-  app.listen(3005, () => {
-    console.log("Server listening on port 3005"),
-      loginToSAPSession(),
-      setInterval(loginToSAPSession, 168e4);
-  });
+});
+
+app.listen(3005, () => {
+  console.log("Server listening on port 3005"),
+    loginToSAPSession(),
+    setInterval(loginToSAPSession, 168e4);
+});
